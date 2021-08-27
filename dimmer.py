@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import bisect
+from tabulate import tabulate
 
 
 class Dimmer:
@@ -26,10 +27,10 @@ class Dimmer:
         omega = 2 * np.pi * self.frequency
         return self.amplitud * np.sin(omega * t)
 
-    def v_dimmer(self, t):
+    def v_dimmer(self, t):  
         per = self.periode
         tint = self.time_interrupt
-
+        # sourcery skip: flip-comparison
         if (0 <= t and t < tint):
             return 0
         elif (tint <= t and t < 0.5 * per):
@@ -38,15 +39,6 @@ class Dimmer:
             return 0
         elif (0.5*per + tint <= t and t < per):
             return self._v_sine(t)
-
-    def vrms_num(self):
-        t_series = np.arange(0, self.periode, self.periode / 200)
-        v_series = [self.v_dimmer(t) for t in t_series]
-        v_sum = 0
-        for i in v_series:
-            v_sum = v_sum + i**2
-        rms = np.sqrt(v_sum / len(v_series))
-        return rms
 
     def vrms_simbolic(self):
         amp, omega = self.amplitud, 2 * np.pi * self.frequency
@@ -90,3 +82,15 @@ class Dimmer:
         
         self.time_interrupt = time_interrupt_backup
         return root
+    
+    def print_dimmer_state(self):
+        # TODO: Ver si conviene agregar un atributo de vrms actual. Se repite el calculo en ocaciones.
+        vrms   = self.vrms_simbolic()
+        duty   = self.convert_rms_duty(vrms)
+        header = ["Amplitud [V]", "Frecuencia [Hz]", "Interrupción [s]", "Vrms [V]", "Duty [%]"]
+        data   = [[self.amplitud, self.frequency, self.time_interrupt, vrms, duty]]
+        print_table(header, data)
+
+def print_table(header, data):
+    print(tabulate(tabular_data=data, headers=header, tablefmt="simple",
+                   numalign="center", stralign="center"))

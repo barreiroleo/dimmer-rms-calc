@@ -41,6 +41,7 @@ class Dimmer:
             return self._v_sine(t)
 
     def vrms_simbolic(self):
+        # TODO: Refactorear nombre del metodo y sus usos en un futuro.
         amp, omega = self.amplitud, 2 * np.pi * self.frequency
         per, tint = self.periode, self.time_interrupt
         T1, T2 = 0, per

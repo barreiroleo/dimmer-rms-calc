@@ -1,20 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
-from scipy.optimize import bisect
-
-from functions import *
-from dimmer import Dimmer
+from dimmer import Dimmer, print_table
 
 dimmer = Dimmer(frec=50, amp=1)
 
-
 def main():
-    for i in range(100+1):
-        tint = dimmer.solve_tint_for_duty(i)
-        print(f"duty({tint*1e3:>13.10f} ms)= {i:>6.2f}%")
     init_plot()
-
 
 def init_plot():
     global fig, ax1, l1, l2
@@ -60,35 +52,45 @@ def update_plot():
 
 
 def setting_sliders():
-    global ax_frec, ax_amp, ax_tInt, ax_duty, ax_solve
-    global slide_frec, slide_amp, slide_tInt, slide_duty, btn_solve
+    global ax_frec, ax_amp, ax_tInt, ax_duty, ax_solve, ax_table
+    global slide_frec, slide_amp, slide_tInt, slide_duty, btn_solve, btn_table
     
     def update_sliders(val):
         dimmer.frequency      = slide_frec.val
         dimmer.amplitud       = slide_amp.val
         dimmer.time_interrupt = dimmer.periode * 0.5 * slide_tInt.val / 100
-        vrms_max = np.sqrt(2) * 0.5 * dimmer.amplitud
+        vrms_max              = np.sqrt(2) * 0.5 * dimmer.amplitud
         slide_duty.set_val(100 * dimmer.vrms_simbolic() / vrms_max)
         update_plot()
 
     def do_tint_solve(val):
         tint = dimmer.solve_tint_for_duty(slide_duty.val)
         slide_tInt.set_val(100 * tint / (dimmer.periode * 0.5))
-
+        dimmer.print_dimmer_state()
+    
+    def do_tint_table_solve(val):
+        for i in range(100+1):
+            tint = dimmer.solve_tint_for_duty(i)
+            print(f"duty({tint*1e3:>13.10f} ms)= {i:>6.2f}%")
+        dimmer.print_dimmer_state()
+            
     ax_frec    = plt.axes([0.12, 0.10, 0.80, 0.03])
     ax_amp     = plt.axes([0.12, 0.15, 0.80, 0.03])
-    ax_tInt    = plt.axes([0.12, 0.20, 0.80, 0.03])
+    ax_tInt    = plt.axes([0.12, 0.20, 0.60, 0.03])
+    ax_table   = plt.axes([0.80, 0.20, 0.10, 0.03])
     ax_duty    = plt.axes([0.12, 0.25, 0.60, 0.03])
-    ax_solve   = plt.axes([0.8, 0.25, 0.10, 0.03])
-    slide_frec = Slider(ax_frec, 'Frec Hz',  1.0, 50,  valinit=1,  valstep=1)
-    slide_amp  = Slider(ax_amp,  'Ampl V',   1.0, 311, valinit=1,  valstep=1)
-    slide_tInt = Slider(ax_tInt, 'Int. %',  0.0, 100, valinit=50, valstep=1)
+    ax_solve   = plt.axes([0.80, 0.25, 0.10, 0.03])
+    slide_frec = Slider(ax_frec, 'Frec Hz', 1.0, 50, valinit=1,  valstep=1)
+    slide_amp  = Slider(ax_amp,  'Ampl V', 1.0, 311, valinit=1,  valstep=1)
+    slide_tInt = Slider(ax_tInt, 'Int. %', 0.0, 100, valinit=50, valstep=1)
     slide_duty = Slider(ax_duty, 'Duty %', 0.0, 100, valinit=50, valstep=1)
+    btn_table  = Button(ax_table,'Table')
     btn_solve  = Button(ax_solve,'Solve')
     slide_frec.on_changed(update_sliders)
     slide_amp.on_changed(update_sliders)
     slide_tInt.on_changed(update_sliders)
     btn_solve.on_clicked(do_tint_solve)
+    btn_table.on_clicked(do_tint_table_solve)
 
 
 if __name__ == "__main__":

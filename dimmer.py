@@ -93,5 +93,6 @@ class Dimmer:
         print_table(header, data)
 
 def print_table(header, data):
+    print("")
     print(tabulate(tabular_data=data, headers=header, tablefmt="simple",
                    numalign="center", stralign="center"))

@@ -27,7 +27,7 @@ class Dimmer:
         omega = 2 * np.pi * self.frequency
         return self.amplitud * np.sin(omega * t)
 
-    def v_dimmer(self, t):  
+    def v_dimmer(self, t):
         per = self.periode
         tint = self.time_interrupt
         # sourcery skip: flip-comparison
@@ -73,17 +73,17 @@ class Dimmer:
     def solve_tint_for_duty(self, duty_perc):
         # HACK: Se respalda el estado del time interrupt porque se utiliza calacular. Al final se restaura.
         time_interrupt_backup = self.time_interrupt
-        
+
         def function(tint, bias=0):
             self.time_interrupt = tint
             vrms_max = np.sqrt(2) * 0.5 * self.amplitud
             vrms_duty = self.vrms_simbolic() / vrms_max
             return vrms_duty - bias
         root = bisect(function, 0, self.periode * 0.5, args=(duty_perc / 100))
-        
+
         self.time_interrupt = time_interrupt_backup
         return root
-    
+
     def print_dimmer_state(self):
         # TODO: Ver si conviene agregar un atributo de vrms actual. Se repite el calculo en ocaciones.
         vrms   = self.vrms_simbolic()
@@ -91,6 +91,7 @@ class Dimmer:
         header = ["Amplitud [V]", "Frecuencia [Hz]", "Interrupción [s]", "Vrms [V]", "Duty [%]"]
         data   = [[self.amplitud, self.frequency, self.time_interrupt, vrms, duty]]
         print_table(header, data)
+
 
 def print_table(header, data):
     print("")

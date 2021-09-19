@@ -70,10 +70,12 @@ def setting_sliders():
     
     def do_tint_table_solve(val):
         points = 256
-        for i in range(points + 1):
-            duty = i * 100 / points
-            tint = dimmer.solve_tint_for_duty(duty)
-            print(f"n: {i:<3} -> duty({tint*1e3:>13.10f} ms)= {duty:>6.2f}%")
+        for i in range(points):
+            duty  = i * 100 / points
+            tint  = dimmer.solve_tint_for_duty(duty)
+            tperc = tint / (dimmer.periode / 2)
+            print(f"n: {i:<3}; t%: {tperc:>.8f} ->", end=' ')
+            print(f"duty({tint*1e3:>8.5f} ms)= {duty:>6.2f}%")
         dimmer.print_dimmer_state()
             
     ax_frec    = plt.axes([0.12, 0.10, 0.80, 0.03])

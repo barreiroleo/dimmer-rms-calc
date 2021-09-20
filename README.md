@@ -11,13 +11,16 @@ Este proyecto ha sido desarrollado como parte otro mayor.
 No planeo expander funcionalidades. Se atenderán corrección de errores y se leerán sugerencias en general.
 
 ### Ploteos
-
-<img src="/screenshots/fig_1 - Plots.png" alt="Plots" style="zoom:100%;"/>
+<p align="center">
+<img src="./screenshots/fig_1 - Plots.png" width="80%"/><br>
+</p>
 
 ### Solve output
-
-<img src="/screenshots/fig_2 - Solve output.png" style="zoom:80%;" />
+<p align="center">
+<img src="./screenshots/fig_2 - Solve output.png" width="95%"/><br>
+</p>
 
 Table output
-
-<img src="/screenshots/fig_3 - Table output.png" style="zoom:100%;" />
+<p align="center">
+<img src="./screenshots/fig_4 - Table output.png" width="70%"/><br>
+</p>

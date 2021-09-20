@@ -69,8 +69,8 @@ def setting_sliders():
         dimmer.print_dimmer_state()
     
     def do_tint_table_solve(val):
-        points = 256
-        for i in range(points):
+        points = (256) - 1
+        for i in range(points + 1):
             duty  = i * 100 / points
             tint  = dimmer.solve_tint_for_duty(duty)
             tperc = tint / (dimmer.periode / 2)

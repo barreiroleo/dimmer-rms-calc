@@ -59,7 +59,37 @@ class Dimmer:
         rms_b = (rms_b1 - rms_b2) * 2
         rms = np.sqrt(rms_a * rms_b)
         return rms
+    
+    # def vrms_simbolic(self):
+    #     # TODO: Refactorear nombre del metodo y sus usos en un futuro.
+    #     amp, omega = self.amplitud, 2 * np.pi * self.frequency
+    #     per, tint = self.periode, self.time_interrupt
+    #     T1, T2 = 0, per
 
+    #     def sine_integrate(t):
+    #         int_a = amp ** 2
+    #         int_b = t / 2
+    #         int_c = (np.sin(2*t*omega) / (4*omega))
+    #         sine_int = int_a * (int_b - int_c)
+    #         return sine_int
+
+    #     rms_a = 1 / (T2 - T1)
+    #     rms_b1 = sine_integrate(T2 / 2)
+    #     rms_b2 = sine_integrate(tint)
+    #     rms_b = (rms_b1 - rms_b2) * 2
+    #     rms = np.sqrt(rms_a * rms_b)
+    #     return rms
+    
+    def vrms_simbolic(self):
+        vamp, omega = self.amplitud, 2 * np.pi * self.frequency
+        per, tint = self.periode, self.time_interrupt
+        T1, T2 = 0, per
+        alfa = omega * tint
+        vrms_a = vamp / np.sqrt(2)
+        vrms_b = 1 - (alfa / np.pi)
+        vrms_c = np.sin(2 * alfa) / (2 * np.pi)
+        return vrms_a * np.sqrt(vrms_b + vrms_c)
+    
     def convert_rms_duty(self, vrms):
         vrms_max = np.sqrt(2) * 0.5 * self.amplitud
         vrms_duty = 100 * vrms / vrms_max
